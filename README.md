@@ -1,6 +1,14 @@
-# Redis::Ha
+# RedisHA
 
-TODO: Write a gem description
+THIS IS CURRENTLY NOT FUNCTIONING - IN DEVELOPMENT ONLY
+
+RedisHA is a Highly Available solution for running Redis under situations other than as a cacheing layer, specifically for where single server operations are required and thus sharding is not an option (e.g. Queueing, Lua based ops).
+
+RedisHA consists of two parts - a Router and a Manager.
+
+## Router
+
+The Router layer acts as a single interface point to your Redis installations, and is essentially a high-performance reverse proxy layer to your Redis installations.
 
 ## Installation
 
