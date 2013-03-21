@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+lib = File.expand_path("../../lib", __FILE__)
+$:.unshift(lib) if File.directory?(lib) && !$LOAD_PATH.include?(lib)
+
+require 'redis-ha'
+require 'redis_ha/router'
+require 'optparse'
+
+options = {:debug => false, :hashing => false}
+OptionParser.new do |opts|
+  opts.banner = "Usage: redis-ha [options]"
+
+  opts.on("-l", "--listen [PORT]", Integer, "Port to listen on") do |v|
+    options[:port] = v || 7379
+  end
+
+  opts.on("-b", "--bind [IP]", String, "Interface to bind to") do |v|
+    options[:bind] = v || "0.0.0.0"
+  end
+
+  opts.on("-s", "--servers [hostname:port]", String, "Servers to bind to") do |v|
+    options[:servers] = v
+  end
+
+  opts.on("-h", "--hashing", "Enable consistent hashing") do |v|
+    options[:hashing] = v
+  end
+
+  opts.on("-d", "--debug", "Enable debug mode") do |v|
+    options[:debug] = v
+  end
+
+end.parse!
+
+RedisHA::Router.start(options[:bind], options[:port], options) do |run|
+  servers = if options[:servers].include?(",")
+    options[:servers].split(",")
+  else
+    [options[:servers]]
+  end
+  servers.each do |serv|
+    host, port = serv.split(":")
+    run.upstream(:relay, host: host, port: port.to_i)
+  end
+  run.on_data do |data|
+    data
+  end
+
+  run.on_response do |upstream, response|
+    response if upstream == :relay
+  end
+
+  run.on_finish do |upstream|
+    :close if upstream == :relay
+  end
+end
