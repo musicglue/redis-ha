@@ -1,4 +1,4 @@
-Copyright (c) 2013 John Maxwell
+Copyright (c) 2013 Music Glue
 
 MIT License
 
