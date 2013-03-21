@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["john@musicglue.com"]
   spec.description   = %q{RedisHA is an attempt at a highly available Redis Installation}
   spec.summary       = %q{See Description}
-  spec.homepage      = "http://devteam.musicglue.com"
+  spec.homepage      = "http://musicglue.com"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
